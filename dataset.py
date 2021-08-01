@@ -4,8 +4,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 
 
-def load_keras_dataset():
-    dataset_url = "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
+def get_downloaded_keras_dataset_path(dataset_url: str):
     data_dir = tf.keras.utils.get_file('flower_photos', origin=dataset_url, untar=True)
     data_dir = pathlib.Path(data_dir)
     return data_dir
