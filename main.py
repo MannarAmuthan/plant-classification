@@ -5,11 +5,12 @@ import sys
 from tensorflow import keras
 
 from dataset import get_downloaded_keras_dataset_path, create_dataset
-from model import create_cnn_model, save_model
+from model import CnnModel
 
 batch_size = 32
 img_height = 180
 img_width = 180
+FLOWERS_MODEL_NAME = "flowers_model"
 flower_dataset_url="https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
 
 
@@ -18,16 +19,14 @@ def get_trained_model():
     train_ds = create_dataset(get_downloaded_keras_dataset_path(flower_dataset_url), (img_height, img_width), "training", batch_size)
     validation_ds = create_dataset(get_downloaded_keras_dataset_path(flower_dataset_url), (img_height, img_width), "validation", batch_size)
     class_names, number_of_classes = train_ds.class_names, len(train_ds.class_names)
-    model = keras.models.load_model("flowers_model") if \
-        already_trained is True else create_cnn_model(number_of_classes,img_height,img_width)
+
+    model = CnnModel(FLOWERS_MODEL_NAME, keras.models.load_model(FLOWERS_MODEL_NAME)) \
+        if already_trained is True \
+        else CnnModel.create_cnn_model(FLOWERS_MODEL_NAME,number_of_classes, img_height, img_width)
 
     if already_trained is False:
-        model.fit(
-            train_ds,
-            validation_data=validation_ds,
-            epochs=10
-        )
-        save_model(model, "flowers_model")
+        model.fit(train_ds,validation_ds)
+        model.save()
 
     return (model,class_names)
 
