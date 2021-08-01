@@ -4,37 +4,32 @@ import sys
 
 from tensorflow import keras
 
-from dataset import get_downloaded_keras_dataset_path, create_dataset
+from dataset import get_train_validation_of_flower_dataset
 from model import CnnModel
 
-batch_size = 32
 img_height = 180
 img_width = 180
-FLOWERS_MODEL_NAME = "flowers_model"
-flower_dataset_url="https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
 
 
-def get_trained_model():
-    already_trained = True
-    train_ds = create_dataset(get_downloaded_keras_dataset_path(flower_dataset_url), (img_height, img_width), "training", batch_size)
-    validation_ds = create_dataset(get_downloaded_keras_dataset_path(flower_dataset_url), (img_height, img_width), "validation", batch_size)
-    class_names, number_of_classes = train_ds.class_names, len(train_ds.class_names)
+def get_trained_model(dataset_provider):
+    already_trained = False
+    dataset_name, class_names, number_of_classes, train_ds, validation_ds = dataset_provider()
 
-    model = CnnModel(FLOWERS_MODEL_NAME, keras.models.load_model(FLOWERS_MODEL_NAME)) \
+    cnn_model = CnnModel(dataset_name, keras.models.load_model(dataset_name)) \
         if already_trained is True \
-        else CnnModel.create_cnn_model(FLOWERS_MODEL_NAME,number_of_classes, img_height, img_width)
+        else CnnModel.create_cnn_model(dataset_name,number_of_classes, img_height, img_width)
 
     if already_trained is False:
-        model.fit(train_ds,validation_ds)
-        model.save()
+        cnn_model.fit(train_ds,validation_ds)
+        cnn_model.save()
 
-    return (model,class_names)
+    return (cnn_model,class_names)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     img_to_recognize=sys.argv[1]
 
-    model,class_names=get_trained_model()
+    model,class_names=get_trained_model(get_train_validation_of_flower_dataset)
 
     img = keras.preprocessing.image.load_img(
         img_to_recognize,
