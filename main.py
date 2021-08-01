@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import sys
 
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -72,6 +73,8 @@ def save_model(model,name):
 
 
 if __name__=="__main__":
+    img_to_recognize=sys.argv[1]
+
     already_trained = True
 
     train_ds = get_dataset_for(get_tf_data_directory(), "training")
@@ -89,7 +92,7 @@ if __name__=="__main__":
         save_model(model, "flowers_model")
 
     img = keras.preprocessing.image.load_img(
-        "/Users/amuthanmannan/Downloads/pictures-of-red-flowers-4061761-01-d08e7631918a4bd299f9422933980c12.jpeg",
+        img_to_recognize,
         target_size=(img_height, img_width)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
