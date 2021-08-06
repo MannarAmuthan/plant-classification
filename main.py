@@ -3,15 +3,14 @@ import tensorflow as tf
 import sys
 
 from tensorflow import keras
-
-from datasets.flowers import get_train_validation_of_flower_dataset
+from datasets.flowers_two import get_train_validation_of_flower_dataset_two
 from model import CnnModel
 
 
 def get_trained_model(dataset_provider):
     already_trained = True
     dataset_name, class_names, number_of_classes, train_ds, \
-    validation_ds,img_height , img_width = dataset_provider()
+    validation_ds, img_height, img_width = dataset_provider()
 
     cnn_model = CnnModel(dataset_name, keras.models.load_model(dataset_name)) \
         if already_trained is True \
@@ -27,7 +26,7 @@ def get_trained_model(dataset_provider):
 if __name__ == "__main__":
     img_to_recognize=sys.argv[1]
 
-    model,class_names,img_height,img_width=get_trained_model(get_train_validation_of_flower_dataset)
+    model,class_names,img_height,img_width = get_trained_model(get_train_validation_of_flower_dataset_two)
 
     img = keras.preprocessing.image.load_img(
         img_to_recognize,
