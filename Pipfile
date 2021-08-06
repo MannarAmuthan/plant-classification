@@ -9,6 +9,7 @@ pandas = "*"
 scikit-learn = "*"
 keras = "==2.4.3"
 tensorflow = "*"
+flask = "*"
 
 [dev-packages]
 
