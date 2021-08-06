@@ -23,23 +23,27 @@ def get_trained_model(dataset_provider):
     return cnn_model,class_names, img_height, img_width
 
 
+def predict(img):
+    model, class_names, img_height, img_width = get_trained_model(get_train_validation_of_flower_dataset_two)
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)  # Create a batch
+    predictions = model.predict(img_array)
+    score = tf.nn.softmax(predictions[0])
+    predicted_class = class_names[np.argmax(score)]
+    return predicted_class,score
+
 if __name__ == "__main__":
     img_to_recognize=sys.argv[1]
 
-    model,class_names,img_height,img_width = get_trained_model(get_train_validation_of_flower_dataset_two)
-
     img = keras.preprocessing.image.load_img(
         img_to_recognize,
-        target_size=(img_height, img_width)
+        target_size=(180, 180)
     )
 
-    img_array = keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)  # Create a batch
 
-    predictions = model.predict(img_array)
-    score = tf.nn.softmax(predictions[0])
+    (predicted_class , score)=predict(img)
 
     print(
         "This image most likely belongs to {} with a {:.2f} percent confidence."
-            .format(class_names[np.argmax(score)], 100 * np.max(score))
+            .format(predicted_class, 100 * np.max(score))
     )
