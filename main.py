@@ -7,13 +7,11 @@ from tensorflow import keras
 from dataset import get_train_validation_of_flower_dataset
 from model import CnnModel
 
-img_height = 180
-img_width = 180
-
 
 def get_trained_model(dataset_provider):
-    already_trained = False
-    dataset_name, class_names, number_of_classes, train_ds, validation_ds = dataset_provider()
+    already_trained = True
+    dataset_name, class_names, number_of_classes, train_ds, \
+    validation_ds,img_height , img_width = dataset_provider()
 
     cnn_model = CnnModel(dataset_name, keras.models.load_model(dataset_name)) \
         if already_trained is True \
@@ -23,13 +21,13 @@ def get_trained_model(dataset_provider):
         cnn_model.fit(train_ds,validation_ds)
         cnn_model.save()
 
-    return (cnn_model,class_names)
+    return cnn_model,class_names, img_height, img_width
 
 
 if __name__ == "__main__":
     img_to_recognize=sys.argv[1]
 
-    model,class_names=get_trained_model(get_train_validation_of_flower_dataset)
+    model,class_names,img_height,img_width=get_trained_model(get_train_validation_of_flower_dataset)
 
     img = keras.preprocessing.image.load_img(
         img_to_recognize,

@@ -17,7 +17,7 @@ def get_train_validation_of_flower_dataset():
     validation_ds = create_dataset(get_downloaded_keras_dataset_path(flower_dataset_url,'flower_photos'), (img_height, img_width),
                                    "validation", batch_size)
     class_names, number_of_classes = train_ds.class_names, len(train_ds.class_names)
-    return FLOWERS_MODEL_NAME , class_names, number_of_classes, train_ds, validation_ds
+    return FLOWERS_MODEL_NAME , class_names, number_of_classes, train_ds, validation_ds, img_height , img_width
 
 
 def get_downloaded_keras_dataset_path(dataset_url: str,folder_name: str):
