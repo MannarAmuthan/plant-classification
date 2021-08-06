@@ -4,7 +4,7 @@ import sys
 
 from tensorflow import keras
 
-from dataset import get_train_validation_of_flower_dataset
+from datasets.flowers import get_train_validation_of_flower_dataset
 from model import CnnModel
 
 
