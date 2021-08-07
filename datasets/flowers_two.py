@@ -1,20 +1,22 @@
-
-
-"/Users/amuthanmannan/Downloads/Flowers299/data"
-
 from dataset import create_dataset, get_downloaded_keras_dataset_path
 
-batch_size = 32
-img_height = 180
-img_width = 180
 
-MODEL_NAME = "flowers_model_two"
+class FlowersDataset:
 
+    def __init__(self):
+        self.class_names=['Hibiscus', 'Jasmine', 'Lotus', 'Roses', 'Sunflower', 'Tuberose']
+        self.number_of_classes=len(self.class_names)
+        self.MODEL_NAME = "flowers_model_two"
+        self.img_height = 180
+        self.img_width = 180
 
-def get_train_validation_of_flower_dataset_two():
-    train_ds = create_dataset("/Users/amuthanmannan/Downloads/Flowers299/data/train", (img_height, img_width),
-                              "training", batch_size)
-    validation_ds = create_dataset("/Users/amuthanmannan/Downloads/Flowers299/data/train", (img_height, img_width),
-                                   "validation", batch_size)
-    class_names, number_of_classes = train_ds.class_names, len(train_ds.class_names)
-    return MODEL_NAME , class_names, number_of_classes, train_ds, validation_ds, img_height , img_width
+    def load(self):
+        self.batch_size = 32
+        self.train_ds = create_dataset("/Users/amuthanmannan/Downloads/Flowers299/data/train", (self.img_height, self.img_width),
+                                       "training", self.batch_size)
+        self.validation_ds = create_dataset("/Users/amuthanmannan/Downloads/Flowers299/data/train",
+                                            (self.img_height, self.img_width),
+                                            "validation", self.batch_size)
+        self.class_names = self.train_ds.class_names
+        self.number_of_classes = len(self.class_names)
+        self.MODEL_NAME = "flowers_model_two"

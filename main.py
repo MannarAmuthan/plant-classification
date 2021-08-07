@@ -3,20 +3,28 @@ import tensorflow as tf
 import sys
 
 from tensorflow import keras
-from datasets.flowers_two import get_train_validation_of_flower_dataset_two
+
+from datasets.flowers_two import FlowersDataset
 from model import CnnModel
 
 
-def get_trained_model(dataset_provider):
+def get_trained_model(dataset: FlowersDataset):
     already_trained = True
-    dataset_name, class_names, number_of_classes, train_ds, \
-    validation_ds, img_height, img_width = dataset_provider()
 
-    cnn_model = CnnModel(dataset_name, keras.models.load_model(dataset_name)) \
-        if already_trained is True \
-        else CnnModel.create_cnn_model(dataset_name,number_of_classes, img_height, img_width)
+    img_height = dataset.img_height
+    img_width = dataset.img_width
+    dataset_name = dataset.MODEL_NAME
 
-    if already_trained is False:
+    if already_trained:
+        class_names=dataset.class_names
+        cnn_model = CnnModel(dataset_name, keras.models.load_model(dataset_name))
+    else:
+        dataset.load()
+        class_names = dataset.class_names
+        number_of_classes = dataset.number_of_classes
+        train_ds=dataset.train_ds
+        validation_ds=dataset.validation_ds
+        cnn_model=CnnModel.create_cnn_model(dataset_name, number_of_classes, img_height, img_width)
         cnn_model.fit(train_ds,validation_ds)
         cnn_model.save()
 
@@ -24,7 +32,7 @@ def get_trained_model(dataset_provider):
 
 
 def predict(img):
-    model, class_names, img_height, img_width = get_trained_model(get_train_validation_of_flower_dataset_two)
+    model, class_names, img_height, img_width = get_trained_model(FlowersDataset())
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)  # Create a batch
     predictions = model.predict(img_array)
@@ -39,7 +47,6 @@ if __name__ == "__main__":
         img_to_recognize,
         target_size=(180, 180)
     )
-
 
     (predicted_class , score)=predict(img)
 
