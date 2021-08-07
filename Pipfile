@@ -10,6 +10,7 @@ scikit-learn = "*"
 keras = "==2.4.3"
 tensorflow-cpu = "*"
 flask = "*"
+gunicorn = "==20.0.4"
 
 [dev-packages]
 
